@@ -7,21 +7,22 @@ and transactions.
 The service provides a clean REST API with request validation, database storage (MongoDB), and API documentation via Swagger UI.
 
 
-### Clone and Run
+### Deploymemt
 
+* **Clone and Install Dependencies**
 ```bash
 git clone https://github.com/Deniece718/credit-card-api.git
 cd credit-card-api
 npm install
-npm run build && npm start
 ```
-
-
-### Environment Variables
-
+* **Setup Environment Variables**
 ```bash
 HTTP_PORT=3000
 MONGO_URI='your mongodb uri'
+```
+* **Build and Run**
+```bash
+npm run build && npm start
 ```
 
 
