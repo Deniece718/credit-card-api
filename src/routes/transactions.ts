@@ -5,31 +5,31 @@ import { createTransactionSchema } from '../schemas/transaction';
 
 const router = Router();
 
-router.post('/', validate(createTransactionSchema), async(req: Request, res: Response) => {
-    const { cardId, amount, description, date } = req.body;
-    const newTransaction = new Transaction({
-        cardId,
-        amount,
-        description,
-        date,
-    });
-    //TODO: Consider after adding the new transaction if exceeding the current month spending limit
-    await newTransaction.save();
+router.post('/', validate(createTransactionSchema), async (req: Request, res: Response) => {
+  const { cardId, amount, description, date } = req.body;
+  const newTransaction = new Transaction({
+    cardId,
+    amount,
+    description,
+    date,
+  });
+  //TODO: Consider after adding the new transaction if exceeding the current month spending limit
+  await newTransaction.save();
 
-    res.status(200).json({
-        message: 'Added transaction successfully',
-        data: newTransaction,
-    });
+  res.status(200).json({
+    message: 'Added transaction successfully',
+    data: newTransaction,
+  });
 });
 
-router.get('/:transactionId', async(req: Request, res: Response) => {
-    const transactionId = req.params.transactionId;
-    const transaction = await Transaction.findById(transactionId);
-    
-    res.status(200).json({
-        message: 'Successfully fetched transaction',
-        data: transaction,
-    });
+router.get('/:transactionId', async (req: Request, res: Response) => {
+  const transactionId = req.params.transactionId;
+  const transaction = await Transaction.findById(transactionId);
+
+  res.status(200).json({
+    message: 'Successfully fetched transaction',
+    data: transaction,
+  });
 });
 
 export default router;
@@ -75,9 +75,7 @@ export default router;
  *                   $ref: '#/components/schemas/Transaction'
  *       400:
  *         description: Invalid input or validation failed
- *       500:
- *         description: Internal server error
- * 
+ *
  * /api/transactions/{transactionId}:
  *   get:
  *     summary: Get a transaction by ID
@@ -105,14 +103,4 @@ export default router;
  *                   $ref: '#/components/schemas/Transaction'
  *       404:
  *         description: Transaction not found
- *         content:
- *           application/json:
- *             example:
- *               message: 'Transaction not found'
- *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             example:
- *               message: 'Internal server error'
  */

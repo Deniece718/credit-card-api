@@ -7,9 +7,9 @@ import { userSchema } from '../schemas/user';
 const router = Router();
 
 //TODO: Consider as one of the user authentication method in the future
-router.post('/signup', validate(userSchema), async(req: Request, res: Response) => {
+router.post('/signup', validate(userSchema), async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  const newUser = new User({email});
+  const newUser = new User({ email });
   newUser.setPassword(password);
   await newUser.save();
 
@@ -21,7 +21,7 @@ router.post('/signup', validate(userSchema), async(req: Request, res: Response) 
   });
 });
 
-router.post('/signin', validate(userSchema),async(req: Request, res: Response) => {
+router.post('/signin', validate(userSchema), async (req: Request, res: Response) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
 
@@ -38,7 +38,7 @@ router.post('/signin', validate(userSchema),async(req: Request, res: Response) =
       message: 'User sign in successfully',
       data: {
         userId: user._id,
-      }
+      },
     });
   } else {
     return res.status(401).json({
@@ -47,7 +47,7 @@ router.post('/signin', validate(userSchema),async(req: Request, res: Response) =
   }
 });
 
-router.get('/:userId', async(req: Request, res: Response) => {
+router.get('/:userId', async (req: Request, res: Response) => {
   const userId = req.params.userId;
   const user = await User.findById(userId);
 
@@ -60,7 +60,7 @@ router.get('/:userId', async(req: Request, res: Response) => {
   });
 });
 
-router.get('/:userId/companies', async(req: Request, res: Response) => {
+router.get('/:userId/companies', async (req: Request, res: Response) => {
   const userId = req.params.userId;
   const companies = await Company.find({ userId });
 
@@ -109,9 +109,7 @@ export default router;
  *                       type: string
  *       400:
  *         description: Invalid input
- *       500:
- *         description: Internal server error
- * 
+ *
  * /api/users/signin:
  *   post:
  *     summary: Authenticate a user and sign in
@@ -149,9 +147,7 @@ export default router;
  *         description: User not found
  *       401:
  *         description: Invalid password
- *       500:
- *         description: Internal server error
- * 
+ *
  * /api/users/{userId}:
  *   get:
  *     summary: Get user details by ID
@@ -181,9 +177,7 @@ export default router;
  *                       type: string
  *       404:
  *         description: User not found
- *       500:
- *         description: Internal server error
- * 
+ *
  * /api/users/{userId}/companies:
  *   get:
  *     summary: Get all companies belonging to a user
@@ -208,6 +202,4 @@ export default router;
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Company'
- *       500:
- *         description: Internal server error
  */

@@ -7,115 +7,80 @@ import { cardLimitSchema, createCardSchema } from '../schemas/card';
 
 const router = Router();
 
-router.post('/', validate(createCardSchema), async(req: Request, res: Response) => {
-    try {
-        const { cardNumber, companyId, expirationDate, creditLimit, isActivated } = req.body;
-        const newCard = new Card({
-            cardNumber,
-            companyId,
-            expirationDate,
-            creditLimit,
-            isActivated,
-        });
+router.post('/', validate(createCardSchema), async (req: Request, res: Response) => {
+  const { cardNumber, companyId, expirationDate, creditLimit, isActivated } = req.body;
+  const newCard = new Card({
+    cardNumber,
+    companyId,
+    expirationDate,
+    creditLimit,
+    isActivated,
+  });
 
-        const savedCard = await newCard.save();
-        
-        return res.status(200).json({
-            message: 'Card created successfully',
-            data: savedCard,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: 'Internal server error',   
-        });
-    }
+  const savedCard = await newCard.save();
+
+  return res.status(200).json({
+    message: 'Card created successfully',
+    data: savedCard,
+  });
 });
 
-router.get('/:cardId', async(req: Request, res: Response) => {
-    try {
-        const cardId = req.params.cardId;
-        const cardDoc = await Card.findById(cardId);
-        if (!cardDoc) {
-            return res.status(404).json({
-                message: 'Card not found',
-            });
-        }
-            
-        return res.status(200).json({
-            message: 'Successfully fetched card',
-            data: cardDoc,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            message: 'Internal server error',
-        });
-    }
+router.get('/:cardId', async (req: Request, res: Response) => {
+  const cardId = req.params.cardId;
+  const cardDoc = await Card.findById(cardId);
+  if (!cardDoc) {
+    return res.status(404).json({
+      message: 'Card not found',
+    });
+  }
+
+  return res.status(200).json({
+    message: 'Successfully fetched card',
+    data: cardDoc,
+  });
 });
 
-router.patch('/:cardId/limit', validate(cardLimitSchema), async(req: Request, res: Response) => {
-    try {
-        const cardId = req.params.cardId;
-        const { newLimit } = req.body;
-        const cardDoc = await Card.findByIdAndUpdate(cardId, { creditLimit: newLimit }, { new: true });
-        
-        return res.status(201).json({
-            message: 'Successfully update card limit',
-            data: cardDoc,
-        });
-    } catch (error) {
-         return res.status(500).json({
-            message: 'Internal server error',
-        });
-    }
+router.patch('/:cardId/limit', validate(cardLimitSchema), async (req: Request, res: Response) => {
+  const cardId = req.params.cardId;
+  const { newLimit } = req.body;
+  const cardDoc = await Card.findByIdAndUpdate(cardId, { creditLimit: newLimit }, { new: true });
+
+  return res.status(201).json({
+    message: 'Successfully update card limit',
+    data: cardDoc,
+  });
 });
 
-router.patch('/:cardId/state', async(req: Request & { query: { isActivated: boolean}}, res: Response) => {
-    try {
-        const cardId = req.params.cardId;
-        const { isActivated } = req.query;
-        const cardDoc = await Card.findByIdAndUpdate(cardId, { isActivated }, { new: true });
-        
-        return res.status(201).json({
-            message: 'Successfully update card state',
-            data: cardDoc,
-        });
-    } catch (error) {
-         return res.status(500).json({
-            message: 'Internal server error',
-        });
-    }
+router.patch(
+  '/:cardId/state',
+  async (req: Request & { query: { isActivated: boolean } }, res: Response) => {
+    const cardId = req.params.cardId;
+    const { isActivated } = req.query;
+    const cardDoc = await Card.findByIdAndUpdate(cardId, { isActivated }, { new: true });
+
+    return res.status(201).json({
+      message: 'Successfully update card state',
+      data: cardDoc,
+    });
+  },
+);
+
+router.get('/:cardId/invoices', async (req: Request, res: Response) => {
+  const cardId = req.params.cardId;
+  const invoices = await Invoice.find({ cardId });
+  res.status(200).json({
+    message: 'Fetched invoices successfully',
+    data: invoices,
+  });
 });
 
-router.get('/:cardId/invoices', async(req: Request, res: Response) => {
-    try {
-        const cardId = req.params.cardId;
-        const invoices = await Invoice.find({ cardId });
-        res.status(200).json({
-            message: 'Fetched invoices successfully',
-            data: invoices,
-        });
-    } catch (error) {
-         return res.status(500).json({
-            message: 'Internal server error',
-        });
-    }
-    
-})
-
-router.get('/:cardId/transactions', async(req: Request, res: Response) => {
-    try {
-        const cardId = req.params.cardId;
-        const transactions = await Transaction.find({cardId});
-        res.status(200).json({
-            message: 'Fetched transactions successfully',
-            data: transactions,
-        });
-    } catch (error) {
-         return res.status(500).json({
-            message: 'Internal server error',
-        });
-    }
-    
+router.get('/:cardId/transactions', async (req: Request, res: Response) => {
+  const cardId = req.params.cardId;
+  const transactions = await Transaction.find({ cardId });
+  res.status(200).json({
+    message: 'Fetched transactions successfully',
+    data: transactions,
+  });
 });
 
 export default router;
@@ -138,7 +103,7 @@ export default router;
  *         description: Card fetched successfully
  *       404:
  *         description: Card not found
- * 
+ *
  * /api/cards/{cardId}/limit:
  *   patch:
  *     summary: Update card spending limit
@@ -172,9 +137,7 @@ export default router;
  *                   type: string
  *                 data:
  *                   $ref: '#/components/schemas/Card'
- *       500:
- *         description: Internal server error
- * 
+ *
  * /api/cards/{cardId}/state:
  *   patch:
  *     summary: Update card activation state
@@ -203,9 +166,7 @@ export default router;
  *                   type: string
  *                 data:
  *                   $ref: '#/components/schemas/Card'
- *       500:
- *         description: Internal server error*
- * 
+ *
  * /api/cards/{cardId}/invoices:
  *   get:
  *     summary: Get all invoices for a card
@@ -230,9 +191,7 @@ export default router;
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Invoice'
- *       500:
- *         description: Internal server error
- * 
+ *
  * /api/cards/{cardId}/transactions:
  *   get:
  *     summary: Get all transactions for a card
@@ -257,6 +216,4 @@ export default router;
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/Transaction'
- *       500:
- *         description: Internal server error
  */
