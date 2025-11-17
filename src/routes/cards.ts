@@ -43,7 +43,13 @@ router.get('/:cardId', async (req: Request, res: Response) => {
 router.patch('/:cardId/limit', validate(cardLimitSchema), async (req: Request, res: Response) => {
   const cardId = req.params.cardId;
   const { newLimit } = req.body;
-  const cardDoc = await Card.findByIdAndUpdate(cardId, { creditLimit: newLimit }, { new: true });
+  const cardDoc = await Card.findByIdAndUpdate(cardId, { creditLimit: newLimit }, { new: true});
+
+  if (!cardDoc) {
+    return res.status(404).json({
+      message: 'Card not found',
+    });
+  }
 
   return res.status(201).json({
     message: 'Successfully update card limit',
@@ -55,6 +61,14 @@ router.patch(
   '/:cardId/state',
   async (req: Request & { query: { isActivated: boolean } }, res: Response) => {
     const cardId = req.params.cardId;
+
+    const card = await Card.findById(cardId);
+    if (!card || new Date(card?.expirationDate).getTime() < new Date().getTime()) {
+      res.status(404).json({
+        message: 'Card not found or expired',
+      });
+    }
+
     const { isActivated } = req.query;
     const cardDoc = await Card.findByIdAndUpdate(cardId, { isActivated }, { new: true });
 
@@ -87,6 +101,62 @@ export default router;
 
 /**
  * @swagger
+ * tags:
+ *   name: Cards
+ *   description: Card management
+ */
+
+/**
+ * @swagger
+ * /api/cards:
+ *   post:
+ *     summary: Create a new payment card
+ *     tags: [Cards]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - cardNumber
+ *               - companyId
+ *               - expirationDate
+ *               - creditLimit
+ *               - isActivated
+ *             properties:
+ *               cardNumber:
+ *                 type: string
+ *                 example: "1234-5678-9012-3456"
+ *               companyId:
+ *                 type: string
+ *                 example: "65fa3a9f650cbe1f94dabc12"
+ *               expirationDate:
+ *                 type: string
+ *                 example: "2028-12-31"
+ *               creditLimit:
+ *                 type: number
+ *                 example: 5000
+ *               isActivated:
+ *                 type: boolean
+ *                 example: true
+ *     responses:
+ *       200:
+ *         description: Card created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Card created successfully
+ *                 data:
+ *                   $ref: "#/components/schemas/Card"
+ */
+
+/**
+ * @swagger
  * /api/cards/{cardId}:
  *   get:
  *     summary: Get card by ID
@@ -94,16 +164,19 @@ export default router;
  *     parameters:
  *       - in: path
  *         name: cardId
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
  *         description: Card ID
  *     responses:
  *       200:
  *         description: Card fetched successfully
  *       404:
  *         description: Card not found
- *
+ */
+
+/**
+ * @swagger
  * /api/cards/{cardId}/limit:
  *   patch:
  *     summary: Update card spending limit
@@ -137,7 +210,12 @@ export default router;
  *                   type: string
  *                 data:
  *                   $ref: '#/components/schemas/Card'
- *
+ *       404:
+ *         description: Card not found
+ */
+
+/**
+ * @swagger
  * /api/cards/{cardId}/state:
  *   patch:
  *     summary: Update card activation state
@@ -157,16 +235,12 @@ export default router;
  *     responses:
  *       201:
  *         description: Successfully updated activation state
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 data:
- *                   $ref: '#/components/schemas/Card'
- *
+ *       404:
+ *         description: Card not found or expired
+ */
+
+/**
+ * @swagger
  * /api/cards/{cardId}/invoices:
  *   get:
  *     summary: Get all invoices for a card
@@ -180,18 +254,10 @@ export default router;
  *     responses:
  *       200:
  *         description: Successfully fetched invoices
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Invoice'
- *
+ */
+
+/**
+ * @swagger
  * /api/cards/{cardId}/transactions:
  *   get:
  *     summary: Get all transactions for a card
@@ -205,15 +271,5 @@ export default router;
  *     responses:
  *       200:
  *         description: Successfully fetched transactions
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Transaction'
  */
+

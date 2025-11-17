@@ -73,6 +73,7 @@ router.get('/:companyId/cards/allData', async (req: Request, res: Response) => {
         id: card._id,
         isActivated: card.isActivated,
         cardNumber: card.cardNumber,
+        expirationDate: card.expirationDate,
         remainingSpend: {
           used: currentMonthTransactions.reduce(
             (sum, txn) => sum - Math.abs(txn.amount),

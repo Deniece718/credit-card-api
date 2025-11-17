@@ -14,6 +14,7 @@ export interface CardData {
   id: string;
   isActivated: boolean;
   cardNumber: string;
+  expirationDate: Date;
   remainingSpend: RemainingSpend;
   transactions?: TransactionData[];
 }

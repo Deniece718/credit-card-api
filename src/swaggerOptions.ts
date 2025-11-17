@@ -37,9 +37,12 @@ export const swaggerOptions = {
           type: 'object',
           properties: {
             _id: { type: 'string', example: '6913b9881ecb981dd22cf349' },
-            cardId: { type: 'string', example: '6913a78345e9890b855e3f59' },
+            companyId: { type: 'string', example: '6913ad0a76d41eb129f78077' },
+            isPaid: { type: 'boolean', example: true },
             amount: { type: 'number', example: 5000 },
             createdAt: { type: 'string', format: 'date-time' },
+            dueDate: { type: 'string', format: 'date-time' },
+            cardId: { type: 'string', example: '6913a78345e9890b855e3f59' },
           },
         },
         Transaction: {
@@ -56,9 +59,10 @@ export const swaggerOptions = {
           type: 'object',
           description: 'Card with monthly remaining spend and transactions',
           properties: {
-            id: { type: 'string' },
-            cardNumber: { type: 'string' },
-            isActivated: { type: 'boolean' },
+            id: { type: 'string', example: '6913a78345e9890b855e3f59' },
+            cardNumber: { type: 'string', example: '1234-5678-1010-6666' },
+            isActivated: { type: 'boolean', example: true },
+            expirationDate: { type: 'string', format: 'date-time' },
             remainingSpend: {
               type: 'object',
               properties: {
