@@ -5,8 +5,8 @@ export const createInvoiceSchema = z.object({
   cardId: z.string(),
   amount: z.number(),
   isPais: z.boolean().optional(),
-  createdAt: z.date().optional(),
-  dueDate: z.date().optional(),
+  createdAt: z.string().optional(),
+  dueDate: z.string().optional(),
 });
 
 export const payInoviceSchema = z.object({

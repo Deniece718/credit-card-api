@@ -13,7 +13,7 @@ const findCardMock = jest.spyOn(Card, 'findById').mockImplementation(
         cardNumber: '123456789',
         creditLimit: 10000,
         isActivated: true,
-        expirationDate: new Date('2025-12-31'),
+        expirationDate: new Date('2025-12-31').toISOString(),
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ) as any,
@@ -27,7 +27,7 @@ const updateCardMock = jest.spyOn(Card, 'findByIdAndUpdate').mockImplementation(
         cardNumber: '123456789',
         creditLimit: 20000,
         isActivated: true,
-        expirationDate: new Date('2025-12-31'),
+        expirationDate: new Date('2025-12-31').toISOString(),
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ) as any,
@@ -42,8 +42,8 @@ const findInvoiceMock = jest.spyOn(Invoice, 'find').mockImplementation(
           cardId: '6913a78345e9890b855e3f59',
           isPaid: true,
           amount: 10000,
-          createdAt: new Date('2025-09-02'),
-          dueDate: new Date('2025-09-28'),
+          createdAt: new Date('2025-09-02').toISOString(),
+          dueDate: new Date('2025-09-28').toISOString(),
         },
         {
           _id: '6913b9881ecb981dd22cf349',
@@ -51,8 +51,8 @@ const findInvoiceMock = jest.spyOn(Invoice, 'find').mockImplementation(
           cardId: '6913a78345e9890b855e3f59',
           isPaid: false,
           amount: 15000,
-          createdAt: new Date('2025-10-02'),
-          dueDate: new Date('2025-10-28'),
+          createdAt: new Date('2025-10-02').toISOString(),
+          dueDate: new Date('2025-10-28').toISOString(),
         },
       ],
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -67,7 +67,7 @@ const findTransactionMock = jest.spyOn(Transaction, 'find').mockImplementation(
           cardId: '6913a78345e9890b855e3f59',
           amount: -2000,
           description: 'AWS',
-          date: new Date('2025-11-15'),
+          date: new Date('2025-11-15').toISOString(),
         },
       ],
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

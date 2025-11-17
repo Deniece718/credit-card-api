@@ -12,8 +12,8 @@ jest.spyOn(Invoice, 'findById').mockImplementation(
         cardId: '6913a78345e9890b855e3f59',
         isPaid: false,
         amount: 10000,
-        createdAt: new Date('2025-09-02'),
-        dueDate: new Date('2025-09-28'),
+        createdAt: new Date('2025-09-02').toISOString(),
+        dueDate: new Date('2025-09-28').toISOString(),
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ) as any,

@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface Card extends Document {
   cardNumber: string;
   companyId: mongoose.Types.ObjectId; // Reference to Company
-  expirationDate: string;
+  expirationDate: Date;
   creditLimit: number;
   isActivated: boolean;
 }

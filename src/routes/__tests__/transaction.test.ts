@@ -12,7 +12,7 @@ jest.spyOn(Transaction, 'findById').mockImplementation(
         description: 'AWS',
         isPaid: false,
         amount: 5000,
-        date: new Date('2025-11-02'),
+        date: new Date('2025-11-02').toISOString(),
       },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ) as any,

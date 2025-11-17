@@ -118,12 +118,7 @@ export default router;
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - cardNumber
- *               - companyId
- *               - expirationDate
- *               - creditLimit
- *               - isActivated
+ *             required: [cardNumber, companyId, expirationDate, creditLimit, isActivated]
  *             properties:
  *               cardNumber:
  *                 type: string
@@ -133,7 +128,8 @@ export default router;
  *                 example: "65fa3a9f650cbe1f94dabc12"
  *               expirationDate:
  *                 type: string
- *                 example: "2028-12-31"
+ *                 format: date-time
+ *                 example: '2028-10-18T12:30:00.000Z'
  *               creditLimit:
  *                 type: number
  *                 example: 5000
