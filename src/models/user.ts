@@ -1,12 +1,10 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import crypto from 'crypto';
-import { Company } from './company';
 
 export interface User extends Document {
   email: string;
   setPassword: (password: string) => void;
   validatePassword: (password: string) => boolean;
-  companies: Company[];
 }
 
 const UserSchema: Schema = new Schema({
