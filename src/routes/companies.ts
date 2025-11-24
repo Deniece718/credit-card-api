@@ -3,7 +3,7 @@ import Company from '../models/company';
 import Card from '../models/card';
 import Transaction from '../models/transaction';
 import Invoice from '../models/invoice';
-import { CardData, TransactionData } from '../types';
+import { CardData } from '../types';
 import { now } from 'mongoose';
 import { createCompanySchema } from '../schemas/company';
 import { validate } from '../middlewares/validation';
@@ -57,11 +57,11 @@ router.get('/:companyId/cards/allData', async (req: Request, res: Response) => {
       const transactions = (await Transaction.find({ cardId: card.id })).map(
         (transaction) =>
           ({
-            id: transaction._id,
+            id: transaction._id as string,
             description: transaction.description,
             amount: transaction.amount,
             date: transaction.date,
-          }) as TransactionData,
+          }),
       );
 
       const currentMonthTransactions = transactions.filter((txn) => {
@@ -70,7 +70,7 @@ router.get('/:companyId/cards/allData', async (req: Request, res: Response) => {
       });
 
       cardsData.push({
-        id: card._id,
+        id: card._id as string,
         isActivated: card.isActivated,
         cardNumber: card.cardNumber,
         expirationDate: card.expirationDate,
@@ -82,7 +82,7 @@ router.get('/:companyId/cards/allData', async (req: Request, res: Response) => {
           limit: card.creditLimit,
         },
         transactions,
-      } as unknown as CardData);
+      });
     }),
   );
 
