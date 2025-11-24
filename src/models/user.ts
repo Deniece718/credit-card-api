@@ -10,7 +10,6 @@ export interface User extends Document {
 const UserSchema: Schema = new Schema({
   email: { type: 'string', required: true },
   passwordHash: { type: 'string', required: true },
-  passwordSalt: { type: 'string', required: true },
 });
 
 UserSchema.methods.setPassword = function (password: string) {
