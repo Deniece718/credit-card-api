@@ -4,7 +4,6 @@ import Card from '../models/card';
 import Transaction from '../models/transaction';
 import Invoice from '../models/invoice';
 import { CardData } from '../types';
-import { now } from 'mongoose';
 import { createCompanySchema } from '../schemas/company';
 import { validate } from '../middlewares/validation';
 
@@ -48,8 +47,6 @@ router.get('/:companyId', async (req: Request, res: Response) => {
 router.get('/:companyId/cards/allData', async (req: Request, res: Response) => {
   const companyId = req.params.companyId;
   const cards = await Card.find({ companyId });
-  const currentMonth = now().getMonth();
-  const currentYear = now().getFullYear();
   const cardsData: CardData[] = [];
 
   await Promise.all(
@@ -64,19 +61,14 @@ router.get('/:companyId/cards/allData', async (req: Request, res: Response) => {
           }),
       );
 
-      const currentMonthTransactions = transactions.filter((txn) => {
-        const txnDate = new Date(txn.date);
-        return txnDate.getMonth() === currentMonth && txnDate.getFullYear() === currentYear;
-      });
-
       cardsData.push({
         id: card._id as string,
         isActivated: card.isActivated,
         cardNumber: card.cardNumber,
         expirationDate: card.expirationDate,
         remainingSpend: {
-          used: currentMonthTransactions.reduce(
-            (sum, txn) => sum - Math.abs(txn.amount),
+          used: transactions.reduce(
+            (sum, txn) => sum + txn.amount,
             card.creditLimit,
           ),
           limit: card.creditLimit,
